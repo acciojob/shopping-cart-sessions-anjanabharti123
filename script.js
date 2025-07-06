@@ -50,19 +50,24 @@ function renderCart() {
 // Add to cart
 function addToCart(productId) {
   const product = products.find((p) => p.id == productId);
-  if (product && !cart.some((item) => item.id == product.id)) {
-    cart.push(product);
+  if (product) {
+    cart.push(product); //  Allow duplicates
     sessionStorage.setItem("cart", JSON.stringify(cart));
     renderCart();
   }
 }
 
+
 // Remove from cart
 function removeFromCart(productId) {
-  cart = cart.filter((item) => item.id != productId);
-  sessionStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
+  const index = cart.findIndex((item) => item.id == productId);
+  if (index !== -1) {
+    cart.splice(index, 1); // Remove only one instance
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
 }
+
 
 // Clear cart
 function clearCart() {
