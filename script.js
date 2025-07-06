@@ -1,5 +1,3 @@
-// This is the boilerplate code given for you
-// You can modify this code
 // Product data
 const products = [
   { id: 1, name: "Product 1", price: 10 },
@@ -11,61 +9,69 @@ const products = [
 
 // DOM elements
 const productList = document.getElementById("product-list");
+const cartList = document.getElementById("cart-list");
 const clearCartBtn = document.getElementById("clear-cart-btn");
 
-// Initialize cart from sessionStorage, or create an empty cart
+// Initialize cart from sessionStorage or create empty
 let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+
 // Render product list
 function renderProducts() {
+  productList.innerHTML = ""; // Clear previous list
   products.forEach((product) => {
     const li = document.createElement("li");
     li.innerHTML = `${product.name} - $${product.price} <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>`;
     productList.appendChild(li);
   });
-	 const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
+
+  // Attach event listeners
+  const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
   addToCartButtons.forEach((button) => {
     button.addEventListener("click", () => addToCart(button.dataset.id));
   });
 }
 
-// Render cart list
+// Render cart
 function renderCart() {
-	cart.forEach((item) => {
+  cartList.innerHTML = ""; // Clear previous cart
+  cart.forEach((item) => {
     const li = document.createElement("li");
     li.innerHTML = `${item.name} - $${item.price} <button class="remove-from-cart-btn" data-id="${item.id}">Remove</button>`;
     cartList.appendChild(li);
   });
 
-  // Add event listeners to "Remove" buttons
-  const removeFromCartButtons = document.querySelectorAll(".remove-from-cart-btn");
-  removeFromCartButtons.forEach((button) => {
-    button.addEventListener("click", () => removeFromCart(button.dataset.id));
+  // Attach remove listeners
+  const removeButtons = document.querySelectorAll(".remove-from-cart-btn");
+  removeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => removeFromCart(btn.dataset.id));
   });
 }
 
-// Add item to cart
+// Add to cart
 function addToCart(productId) {
-	const product = products.find((p) => p.id == productId);
-  if (product && !cart.some((item) => item.id == productId)) {
+  const product = products.find((p) => p.id == productId);
+  if (product && !cart.some((item) => item.id == product.id)) {
     cart.push(product);
-    sessionStorage.setItem("cart", JSON.stringify(cart)); // Save cart to sessionStorage
-    renderCart(); // Update the cart display
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
   }
 }
 
-// Remove item from cart
+// Remove from cart
 function removeFromCart(productId) {
-	cart = cart.filter((item) => item.id != productId);
-  sessionStorage.setItem("cart", JSON.stringify(cart)); // Save updated cart to sessionStorage
-  renderCart(); 
+  cart = cart.filter((item) => item.id != productId);
+  sessionStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
 }
 
 // Clear cart
 function clearCart() {
-	cart = []; // Empty the cart array
-  sessionStorage.setItem("cart", JSON.stringify(cart)); // Clear cart in sessionStorage
+  cart = [];
+  sessionStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
 }
+
+// Event listener for Clear Cart
 clearCartBtn.addEventListener("click", clearCart);
 
 // Initial render
